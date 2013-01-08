@@ -26,6 +26,9 @@ void sleepNow()
                                        // THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
   sleep_disable();                     // First thing after waking from sleep:
                                        // disable sleep...
+
+  // Give the DHT sensors 2 seconds to start up
+  delay(2000);
 }
 
 ISR (WDT_vect) {                       // WDT Wakeup
@@ -38,8 +41,6 @@ void watchdogEnable() {                // Turn on watchdog timer; interrupt mode
   cli();
   MCUSR = 0;
   WDTCSR |= B00011000;
-  //WDTCSR = B01000111;                // 2 Second Timeout
-  //WDTCSR = B01100000;                // 4 Second Timeout
   WDTCSR = B01100001;                  // 8 Second Timeout
   sei();
 }

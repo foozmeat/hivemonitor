@@ -28,6 +28,13 @@ void loop() {
 
   sleepXBee();
 
+  // Get ready to go to sleep...
+  // wdt_reset();
+  // Turn on the watchdog timer
+  // watchdogEnable();
+  // Go to sleep, watchdog timer will wake later
+  // sleepNow();
+
   delay(15 * SECONDS);
 }
 
