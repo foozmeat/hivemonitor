@@ -92,7 +92,7 @@ EventMachine::run do
         begin
           sensor_data = JSON.parse line
         rescue
-          $log.error { "garbage data...skipping" }
+          $log.error { "garbage data: #{line}" }
         end
       
         if !sensor_data.nil?
