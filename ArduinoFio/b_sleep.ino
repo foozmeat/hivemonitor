@@ -43,3 +43,15 @@ void watchdogEnable() {                // Turn on watchdog timer; interrupt mode
   WDTCSR = B01100001;                  // 8 Second Timeout
   sei();
 }
+
+void wakeXBee() {
+  // Enable XBee
+  digitalWrite(XBeeSleep, 0);
+  // Wait for XBee Wakeup
+  delay(50);
+}
+
+void sleepXBee() {
+  // Disable XBee
+  digitalWrite(XBeeSleep, 1);
+}

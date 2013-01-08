@@ -1,8 +1,10 @@
 void loop() {
-  println("### Starting Loop");
+  wakeXBee();
+
+  comment("Starting Loop");
   DHT22_ERROR_t errorCode;
 
-  aJsonObject *root,*fmt;
+  // Initialize the JSON container
   root = aJson.createObject();
 
   // One-Wire
@@ -15,14 +17,21 @@ void loop() {
   if (errorCode == DHT_ERROR_NONE) {
     aJson.addNumberToObject(root,"DHT22T", DallasTemperature::toFahrenheit(myDHT22.getTemperatureC()));
     aJson.addNumberToObject(root,"DHT22H", myDHT22.getHumidity());
+  } else {
+    comment("An error occured reading from DHT22");
   }
 
-  Serial.print(aJson.print(root));
+  Serial.println(aJson.print(root));
 
   // Sign off
-  Serial.print("\n");
-  println("### Ending Loop");
+  comment("Ending Loop");
+
+  sleepXBee();
 
   delay(15 * SECONDS);
 }
+
+
+
+
 
