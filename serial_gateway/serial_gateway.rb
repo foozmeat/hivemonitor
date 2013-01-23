@@ -8,7 +8,8 @@ require 'json'
 require 'pp'
 require 'logger'
 
-$log = Logger.new(STDOUT)
+# $log = Logger.new(STDOUT)
+$log = Logger.new('gateway.log', 'daily')
 $log.level = Logger::DEBUG
 
 #params for serial port
@@ -37,6 +38,7 @@ sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 # rest client setup
 
 def send_data_to_emon json
+	return unless EMON_API_KEY != ""
   params = {}
   params['apikey'] = EMON_API_KEY
   params['json'] = json
@@ -54,6 +56,7 @@ def send_data_to_emon json
 end
 
 def send_data_to_sense data
+	return unless SENSE_API_KEY != ""
   params = {}
 
   data.each do |key, value|
