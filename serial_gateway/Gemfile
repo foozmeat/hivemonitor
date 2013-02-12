@@ -3,3 +3,4 @@ source :gemcutter
 gem "serialport"
 gem "eventmachine"
 gem "rest-client"
+gem "json"
