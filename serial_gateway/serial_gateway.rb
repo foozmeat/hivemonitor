@@ -82,7 +82,11 @@ def send_data_to_stathat data
   params = {}
 
   data.each do |key, value|
-    StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
+    begin
+      StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
+    rescue Exception => e
+      $log.error("An exception occured sending to stathat: #{e.message}")
+    end
   end
 	
 end
