@@ -24,8 +24,9 @@ baud_rate = 57600
 data_bits = 8
 stop_bits = 1
 parity = SerialPort::NONE
-EMON_API_KEY = 'xxx'
-SENSE_API_KEY = 'xxx'
+EMON_API_KEY = ''
+SENSE_API_KEY = ''
+STATHAT_API_KEY = '';
 
 $sense_ids = {
   "DS18B20" => 24203,
@@ -76,6 +77,16 @@ def send_data_to_sense data
 
 end
 
+def send_data_to_stathat data
+  return unless STATHAT_API_KEY != ""
+  params = {}
+
+  data.each do |key, value|
+    StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
+  end
+	
+end
+
 EventMachine::run do
 
   EventMachine.add_periodic_timer(60) do
@@ -102,6 +113,7 @@ EventMachine::run do
           $log.info(sensor_data.to_s)
           send_data_to_emon(line)
           send_data_to_sense(sensor_data)
+          send_data_to_stathat(sensor_data)
         end
       end
     end
