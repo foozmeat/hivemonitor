@@ -97,7 +97,12 @@ EventMachine::run do
 
   EventMachine::defer do
     loop do
-      line = sp.gets.chomp
+      # debugger
+      line = sp.gets
+      
+      next if line.nil?
+      line = line.chomp
+      
       if line[0,3] == "###"
         # We got a comment from the Arduino; just print it
         $log.info { line }
