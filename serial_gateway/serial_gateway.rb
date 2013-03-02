@@ -14,7 +14,8 @@ $log.level = Logger::DEBUG
 
 #params for serial port
 #port_str = "/dev/ttyUSB0"
-port_str = "/dev/tty.usbserial-A900XSF2"
+# port_str = "/dev/tty.usbserial-A900XSF2"
+port_str = "/dev/tty.usbserial-A1017IRP"
 
 if (!File.exist?(port_str))
   raise "Port #{port_str} doesn't exist"
