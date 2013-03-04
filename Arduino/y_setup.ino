@@ -12,7 +12,7 @@ void setup()  {
   delay(4000);
   digitalWrite(LED, 0);
 
-  sleepXBee();
+//  sleepXBee();
 
   // Start up the one-wire library
   sensors.begin();

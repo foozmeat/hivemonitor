@@ -4,29 +4,26 @@ void loop() {
   comment("Starting Loop");
   DHT22_ERROR_t errorCode;
 
-  // Initialize the JSON container
-  root = aJson.createObject();
-
   // One-Wire
   sensors.requestTemperatures(); // Send the command to get temperatures
   float Cel = sensors.getTempCByIndex(0);
-  aJson.addNumberToObject(root,"DS18B20", DallasTemperature::toFahrenheit(Cel));
+  addKVPair("DS18B20", DallasTemperature::toFahrenheit(Cel));
 
   // DHT-22
   errorCode = myDHT22.readData();
   if (errorCode == DHT_ERROR_NONE) {
-    aJson.addNumberToObject(root,"DHT22T", DallasTemperature::toFahrenheit(myDHT22.getTemperatureC()));
-    aJson.addNumberToObject(root,"DHT22H", myDHT22.getHumidity());
+    addKVPair("DHT22T",DallasTemperature::toFahrenheit(myDHT22.getTemperatureC()));
+    addKVPair("DHT22H",myDHT22.getHumidity());
   } else {
     comment("An error occured reading from DHT22");
   }
 
-  Serial.println(aJson.print(root));
+  sendOutput();
 
   // Sign off
   comment("Ending Loop");
 
-  sleepXBee();
+//  sleepXBee();
 
   // Get ready to go to sleep...
   // wdt_reset();
@@ -35,7 +32,7 @@ void loop() {
   // Go to sleep, watchdog timer will wake later
   // sleepNow();
 
-  delay(15 * SECONDS);
+  delay(1 * MINUTES);
 }
 
 

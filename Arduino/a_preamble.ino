@@ -5,15 +5,13 @@
 
 #define LED 13
 
-// JSON
-#include <aJSON.h>
-
 // Sensors
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <DHT22.h>
 
 #define SECONDS 1000
+#define MINUTES 60000
 
 // Connect to XBee DTR
 #define XBeeSleep 2
@@ -32,5 +30,4 @@ DHT22 myDHT22(DHT22_PIN);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-aJsonObject *root;
-
+String output = "{";

@@ -8,14 +8,12 @@ require 'json'
 require 'pp'
 require 'logger'
 
-# $log = Logger.new(STDOUT)
-$log = Logger.new('gateway.log', 'daily')
+$log = Logger.new(STDOUT)
 $log.level = Logger::DEBUG
 
 #params for serial port
 #port_str = "/dev/ttyUSB0"
-# port_str = "/dev/tty.usbserial-A900XSF2"
-port_str = "/dev/tty.usbserial-A1017IRP"
+port_str = "/dev/tty.usbserial-A900XSF2"
 
 if (!File.exist?(port_str))
   raise "Port #{port_str} doesn't exist"
@@ -25,9 +23,8 @@ baud_rate = 57600
 data_bits = 8
 stop_bits = 1
 parity = SerialPort::NONE
-EMON_API_KEY = ''
-SENSE_API_KEY = ''
-STATHAT_API_KEY = '';
+EMON_API_KEY = 'fe849ccf68400b34187e9fca856a3387'
+SENSE_API_KEY = 'awwhBCMznko5FQsPZIVBGg'
 
 $sense_ids = {
   "DS18B20" => 24203,
@@ -40,7 +37,6 @@ sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 # rest client setup
 
 def send_data_to_emon json
-	return unless EMON_API_KEY != ""
   params = {}
   params['apikey'] = EMON_API_KEY
   params['json'] = json
@@ -58,7 +54,6 @@ def send_data_to_emon json
 end
 
 def send_data_to_sense data
-	return unless SENSE_API_KEY != ""
   params = {}
 
   data.each do |key, value|
@@ -78,20 +73,6 @@ def send_data_to_sense data
 
 end
 
-def send_data_to_stathat data
-  return unless STATHAT_API_KEY != ""
-  params = {}
-
-  data.each do |key, value|
-    begin
-      StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
-    rescue Exception => e
-      $log.error("An exception occured sending to stathat: #{e.message}")
-    end
-  end
-	
-end
-
 EventMachine::run do
 
   EventMachine.add_periodic_timer(60) do
@@ -102,12 +83,7 @@ EventMachine::run do
 
   EventMachine::defer do
     loop do
-      # debugger
-      line = sp.gets
-      
-      next if line.nil?
-      line = line.chomp
-      
+      line = sp.gets.chomp
       if line[0,3] == "###"
         # We got a comment from the Arduino; just print it
         $log.info { line }
@@ -121,9 +97,8 @@ EventMachine::run do
       
         if !sensor_data.nil?
           $log.info(sensor_data.to_s)
-          send_data_to_emon(line)
-          send_data_to_sense(sensor_data)
-          send_data_to_stathat(sensor_data)
+          # send_data_to_emon(line)
+          # send_data_to_sense(sensor_data)
         end
       end
     end
