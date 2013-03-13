@@ -1,33 +1,37 @@
-// Sleep
-#include <avr/wdt.h>
 #include <avr/sleep.h>
-#include <avr/interrupt.h>
-
-#define LED 13
+#include <avr/power.h>
+#include <stdarg.h>
 
 // Sensors
+#include <Wire.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <DHT22.h>
+#include "DS3231.h"
 
 #define SECONDS 1000
 #define MINUTES 60000
 
-// Connect to XBee DTR
-#define XBeeSleep 2
+// Pins
+#define alarmPin 2 // RTC Alarm
+#define XBeeSleep 4 // Connect to XBee DTR
+#define ONE_WIRE_BUS 6
+#define DHT22_PIN_1 7
+#define DHT22_PIN_2 8
+#define LED 13
 
-// Number of 8 second cycles before waking
-// up XBee and sending data (8*8 = 64 seconds)
-#define WAITPERIOD 8
+#define MIC_1 0
 
 // DHT22
-#define DHT22_PIN 7
-DHT22 myDHT22(DHT22_PIN);
+DHT22 myDHT22_1(DHT22_PIN_1);
+DHT22 myDHT22_2(DHT22_PIN_2);
 
 // One Wire
-#define ONE_WIRE_BUS 4
-
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
+
+volatile boolean alarmFired = false;
+
+DS3231 RTC; //Create the DS3231 object
 
 String output = "{";
