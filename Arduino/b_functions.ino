@@ -11,30 +11,18 @@ void comment(String msg) {
   Serial.println(String("### " + msg));
 }
 
-void addKVPair(String key, float value) {
-  char buf[12];
-  char *v = dtostrf(value, 8, 5, buf);
-
-  output = output + '"' + key + '"' + ':' + v;
-  output = output + ','; 
-}
-
-void sendOutput() {
-
-  // remove the trailing comma
-  output = output.substring(0,output.length() - 2);
-
-  output = output + '}';
-
-  Serial.println(output);
-  output = "{";
-
-}
-
-float mapfloat(float x, float in_min, float in_max, float out_min, float out_max)
+void addKVPair(String key, float value) 
 {
-  return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
+  Serial.print("{\"");
+  Serial.print(key);
+  Serial.print("\":");
+  Serial.print(value);
+  Serial.println("}");
 }
 
+float paToInMg (float pa)
+{
+  return pa * 0.000295299830714;
+}
 
 
