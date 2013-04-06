@@ -1,13 +1,13 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    eventmachine (1.0.0)
+    eventmachine (1.0.3)
     json (1.7.7)
-    mime-types (1.19)
+    mime-types (1.21)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     serialport (1.1.0)
-    stathat (0.0.5)
+    stathat (0.1.6)
 
 PLATFORMS
   ruby
