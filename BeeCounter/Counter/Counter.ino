@@ -1,6 +1,6 @@
 #include <Wire.h>
 
-const int numberOfGates = 20;
+const int numberOfGates = 22;
 const int debeebounce = 300;
 const int outputDelay = 5000;
 unsigned long lastOutput = 0;
@@ -33,9 +33,9 @@ typedef struct
 BeeCounter;
 
 static BeeCounter bc = {
-  "abcdefghijklnortuvwx", // gate letters
-  { 44,42,40,38,16,14,12,10,8 ,35,34,33,32,19,25,7 ,5 ,3 ,2 ,0   } , // inPins
-  { 45,43,41,39,17,15,13,11,9 ,31,30,29,28,18,24,26,6 ,4 ,1 ,27  } // outPins
+  "abcdefghijklnopqrtuvwx", // gate letters
+  { 44,42,40,38,16,14,12,10,8 ,35,34,33,32,19,21,23,25,7 ,5 ,3 ,2 ,0   } , // inPins
+  { 45,43,41,39,17,15,13,11,9 ,31,30,29,28,18,20,22,24,26,6 ,4 ,1 ,27  } // outPins
 };
 
 
@@ -79,6 +79,7 @@ void arrayPrint(int array[])
 
 void setup()
 {
+  
   Serial.begin(57600);
   Wire.begin(2);
   // Init pins
@@ -125,6 +126,16 @@ void loop()
   if (now - lastOutput >= outputDelay) {
     for (int i = 0; i < numberOfGates; i++) {
       Serial.print(bc.gates[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+    for (int i = 0; i < numberOfGates; i++) {
+      Serial.print(bc.inPin[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+    for (int i = 0; i < numberOfGates; i++) {
+      Serial.print(bc.outPin[i]);
       Serial.print(" ");
     }
     Serial.println();
