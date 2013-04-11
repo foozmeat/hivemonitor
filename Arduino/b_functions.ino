@@ -20,6 +20,12 @@ void addKVPair(String key, float value)
   Serial.println("}");
 }
 
+float celToFar(float Tc)
+{
+  float Tf = (9/5) * Tc + 32;
+  return Tf;
+}
+
 float paToInMg (float pa)
 {
   return pa * 0.000295299830714;

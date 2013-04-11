@@ -7,7 +7,7 @@ void readDHT22(DHT22 sensor, char* code)
   switch(errorCode)
   {
   case DHT_ERROR_NONE:
-    addKVPair(p("%s_T",code),DallasTemperature::toFahrenheit(sensor.getTemperatureC()));
+    addKVPair(p("%s_T",code),celToFar(sensor.getTemperatureC()));
     addKVPair(p("%s_H",code),sensor.getHumidity());
     break;
   case DHT_ERROR_CHECKSUM:
@@ -41,18 +41,13 @@ void readDHT22(DHT22 sensor, char* code)
 //  addKVPair("DS18B20", DallasTemperature::toFahrenheit(Cel));
 //}
 
-void readBMP085_temp() 
+void readBMP085() 
 {
   delay(100);
   float Cel = bmp.readTemperature();
-  addKVPair("O_T2", DallasTemperature::toFahrenheit(Cel));
-
-}
-
-void readBMP085_pressure() 
-{
-  delay(100);
+  addKVPair("O_T2", celToFar(Cel));
   addKVPair("O_P",paToInMg(bmp.readPressure()));
+
 }
 
 void readBeeCounter(int number)
