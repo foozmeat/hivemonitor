@@ -7,6 +7,7 @@ Bundler.require
 require 'json'
 require 'pp'
 require 'logger'
+require 'date'
 
 $log = Logger.new(STDOUT)
 # $log = Logger.new('gateway.log', 'daily')
@@ -56,7 +57,7 @@ def send_data_to_emon json
 	rescue Exception => e
 	  $log.error("An exception occured sending to Emon: #{e.message}")
   else
-    $log.info("Logged data to EmonCMS")
+    $log.debug("Logged data to EmonCMS")
 	end
   
 end
@@ -96,6 +97,28 @@ def send_data_to_stathat data
     end
   end
 	
+end
+
+def log_to_sqlite data
+
+  SQLite3::Database.new DATABASE_NAME
+  db = SQLite3::Database.open DATABASE_NAME
+  now = DateTime.now.to_s
+
+  begin
+    db.execute "CREATE TABLE IF NOT EXISTS hive_data (date TEXT NOT NULL, data_key TEXT NOT NULL,data_value REAL NOT NULL);"
+  rescue SQLite3::Exception => e 
+      puts "Exception occured"
+      puts e
+  end
+  
+  data.each do |key, value|
+    db.execute "INSERT INTO hive_data (date,data_key,data_value) VALUES ('#{now}','#{key}', '#{value}')"
+    # $log.debug("Logged data to sqlite")
+  end  
+  
+  db.close if db
+  
 end
 
 def reset_port
@@ -149,6 +172,7 @@ EventMachine::run do
           send_data_to_emon(line)
           # send_data_to_sense(sensor_data)
           send_data_to_stathat(sensor_data)
+          log_to_sqlite(sensor_data)
         else
           $log.error("Sensor data was nil!")
         end
