@@ -46,7 +46,7 @@ void readBMP085()
   delay(100);
   float Cel = bmp.readTemperature();
   addKVPair("O_T2", celToFar(Cel));
-  addKVPair("O_P",paToInMg(bmp.readPressure()));
+  addKVPair("O_P",paToMB(bmp.readPressure()));
 
 }
 

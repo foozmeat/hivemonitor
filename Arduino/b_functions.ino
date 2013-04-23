@@ -31,4 +31,8 @@ float paToInMg (float pa)
   return pa * 0.000295299830714;
 }
 
+float paToMB (float pa)
+{
+  return pa * 0.01;
+}
 
