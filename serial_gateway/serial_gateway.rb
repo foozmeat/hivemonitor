@@ -89,11 +89,16 @@ def send_data_to_stathat data
 
   data.each do |key, value|
     begin
-      StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
+      # The Bee counter should use a count instead of a value
+      if key.match("BC").nil?
+        StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
+      else
+        StatHat::API.ez_post_count(key, "a0kyl7F9F2vIXEO8", value)
+      end        
     rescue Exception => e
       $log.error("An exception occured sending to stathat: #{e.message}")
     else
-      $log.info("Logged data to Stathat")
+      $log.debug("Logged data to Stathat")
     end
   end
 	
@@ -139,7 +144,7 @@ EventMachine::run do
 
       line = $sp.gets
       if line.nil?
-        $log.info("Incoming data is nil")
+        $log.error("Incoming data is nil")
         nilLineCount += 1
         
         if nilLineCount >= 5
