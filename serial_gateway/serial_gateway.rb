@@ -25,8 +25,9 @@ baud_rate = 57600
 data_bits = 8
 stop_bits = 1
 parity = SerialPort::NONE
-EMON_API_KEY = 'fe849ccf68400b34187e9fca856a3387'
-SENSE_API_KEY = 'awwhBCMznko5FQsPZIVBGg'
+EMON_API_KEY = ''
+SENSE_API_KEY = ''
+STATHAT_API_KEY = ''
 
 $sense_ids = {
   "DS18B20" => 24203,
