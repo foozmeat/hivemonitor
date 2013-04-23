@@ -8,14 +8,14 @@ require 'json'
 require 'pp'
 require 'logger'
 
-# $log = Logger.new(STDOUT)
-$log = Logger.new('gateway.log', 'daily')
-$log.level = Logger::DEBUG
+$log = Logger.new(STDOUT)
+# $log = Logger.new('gateway.log', 'daily')
+$log.level = Logger::INFO
 
 #params for serial port
 #port_str = "/dev/ttyUSB0"
-port_str = "/dev/tty.usbserial-A900XSF2"
-# port_str = "/dev/tty.usbserial-A1017IRP"
+#port_str = "/dev/tty.usbserial-A900XSF2"
+port_str = "/dev/tty.usbserial-A1017IRP"
 
 if (!File.exist?(port_str))
   raise "Port #{port_str} doesn't exist"
@@ -34,7 +34,9 @@ $sense_ids = {
   "DHT22H" => 24338
 }
 
-sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
+nilLineCount = 0;
+
+$sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 
 # rest client setup
 
@@ -52,6 +54,8 @@ def send_data_to_emon json
 		@return_code = e.http_code
 	rescue Exception => e
 	  $log.error("An exception occured sending to Emon: #{e.message}")
+  else
+    $log.info("Logged data to EmonCMS")
 	end
   
 end
@@ -86,9 +90,16 @@ def send_data_to_stathat data
       StatHat::API.ez_post_value(key, "a0kyl7F9F2vIXEO8", value)
     rescue Exception => e
       $log.error("An exception occured sending to stathat: #{e.message}")
+    else
+      $log.info("Logged data to Stathat")
     end
   end
 	
+end
+
+def reset_port
+  $sp.close
+  $sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 end
 
 EventMachine::run do
@@ -102,15 +113,29 @@ EventMachine::run do
   EventMachine::defer do
     loop do
 
-      line = sp.gets
+      line = $sp.gets
+      if line.nil?
+        $log.info("Incoming data is nil")
+        nilLineCount += 1
+        
+        if nilLineCount >= 5
+          reset_port
+          nilLineCount = 0
+          $log.error("Port reset because of nil data")
+        end
+        
+        next
+      end
+      line.chomp!
+      $log.debug("Incoming data: " + line)
       
-      next if line.nil?
-      line = line.chomp
+      # next if line.nil?
+      # line = line.chomp
       
       if line[0,3] == "###"
         # We got a comment from the Arduino; just print it
         $log.info { line }
-      elsif line[0] == "{"
+      else
         # We probably got some JSON so try and parse it
         begin
           sensor_data = JSON.parse line
@@ -121,12 +146,14 @@ EventMachine::run do
         if !sensor_data.nil?
           $log.info(sensor_data.to_s)
           send_data_to_emon(line)
-          send_data_to_sense(sensor_data)
+          # send_data_to_sense(sensor_data)
           send_data_to_stathat(sensor_data)
+        else
+          $log.error("Sensor data was nil!")
         end
       end
     end
   end
 end
 
-sp.close
+$sp.close
