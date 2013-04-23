@@ -1,6 +1,6 @@
 #include <Wire.h>
 
-const int numberOfGates = 22;
+const int numberOfGates = 21;
 const int debeebounce = 300;
 const int outputDelay = 5000;
 unsigned long lastOutput = 0;
@@ -32,12 +32,12 @@ typedef struct
 } 
 BeeCounter;
 
-static BeeCounter bc = {
-  "abcdefghijklnopqrtuvwx", // gate letters
-  { 44,42,40,38,16,14,12,10,8 ,35,34,33,32,19,21,23,25,7 ,5 ,3 ,2 ,0   } , // inPins
-  { 45,43,41,39,17,15,13,11,9 ,31,30,29,28,18,20,22,24,26,6 ,4 ,1 ,27  } // outPins
+volatile BeeCounter bc = {
+  "abcdefghijlnopqrtuvwx", // gate letters
+//  A  B  C  D  E  F  G  H  I  J  L  N  O  P  Q  R  T  U  V  W   X
+  { 44,42,40,38,16,14,12,10,8 ,35,33,32,19,21,23,25,7 ,5 ,3 ,2  ,36   }, // inPins
+  { 45,43,41,39,17,15,13,11,9 ,31,29,28,18,20,22,24,26,6 ,4 ,37 ,27  } // outPins
 };
-
 
 char* p(char *fmt, ... ){
   char tmp[128]; // resulting string limited to 128 chars
@@ -64,7 +64,7 @@ void resetCounts()
   }
 }
 
-void arrayPrint(int array[])
+void arrayPrint(volatile int array[])
 {
   for (int i = 0; i < numberOfGates; i++) {
     Serial.print(array[i]);
