@@ -1,6 +1,7 @@
-source :gemcutter
+source 'https://rubygems.org'
 gem "serialport"
 gem "eventmachine"
 gem "rest-client"
 gem "json"
 gem "stathat"
+gem "sqlite3"

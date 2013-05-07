@@ -106,8 +106,11 @@ end
 
 def log_to_sqlite data
 
-  SQLite3::Database.new DATABASE_NAME
-  db = SQLite3::Database.open DATABASE_NAME
+  date = DateTime.now().strftime("%Y-%m")
+  dbname = "#{date}-#{DATABASE_NAME}"
+
+  SQLite3::Database.new dbname
+  db = SQLite3::Database.open dbname
   now = DateTime.now.to_s
 
   begin
